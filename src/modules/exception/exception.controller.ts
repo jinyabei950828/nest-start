@@ -11,6 +11,7 @@ import {
   Delete,
   Controller,
   UseFilters,
+  ParseIntPipe
 } from '@nestjs/common';
 import { ExceptionService } from './exception.service';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
@@ -40,14 +41,15 @@ export class ExceptionController {
 
   @Post()
   @ApiBody({ description: '填写更新内容' })
-  save(@Body() { message }): string {
+  save(@Body() { message, id }): string {
     return this.exceptionService.save(message);
   }
 
   @Patch(':id')
   @ApiParam({ name: 'id' })
   @ApiBody({ description: '请输入message' })
-  update(@Param() { id }, @Body() { message }): string {
+  //接受的参数通过管道转换
+  update(@Param('id', new ParseIntPipe()) id, @Body() { message }): string {
     return this.exceptionService.update(id, message);
   }
 
